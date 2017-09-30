@@ -1,0 +1,43 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>com.fiber.rest.config.WebServiceConfig</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+		<display-name>fiber-jersey</display-name>
+		<servlet-name>fiber-jersey</servlet-name>
+		<!-- Support async (needed by fiber-blocking) -->
+		<servlet-class>co.paralleluniverse.fibers.jersey.ServletContainer</servlet-class>
+		<!--  <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class> -->
+		<!-- Set packages to be scanned for resources -->
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.fiber.rest.controller</param-value>
+		</init-param>
+		<!-- For Jersey logging in case -->
+		 <init-param> <param-name>jersey.config.server.provider.classnames</param-name> 
+			<param-value>org.glassfish.jersey.filter.LoggingFilter</param-value> </init-param>
+		<!-- Don't lazy-load (fail-fast) -->
+		<load-on-startup>1</load-on-startup>
+		<async-supported>true</async-supported>
+	</servlet>
+
+	<!-- Mapping -->
+	<servlet-mapping>
+		<servlet-name>fiber-jersey</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
